@@ -3,7 +3,9 @@ package edu.udacity.java.nano.chat;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,6 +24,7 @@ public class WebSocketChatServer {
      * All chat sessions.
      */
     private static Map<String, Session> onlineSessions = new ConcurrentHashMap<>();
+    private static HashMap<String, String> users = new HashMap<>();
 
     private static void sendMessageToAll(String msg) {
         //TODO: add send message method.
@@ -33,6 +36,9 @@ public class WebSocketChatServer {
     @OnOpen
     public void onOpen(Session session) {
         //TODO: add on open connection.
+//        onlineSessions.put(username, session);
+//        users.put(session.getId(), username);
+        System.out.println("Open connection");
     }
 
     /**
@@ -49,6 +55,8 @@ public class WebSocketChatServer {
     @OnClose
     public void onClose(Session session) {
         //TODO: add close connection.
+        System.out.println("close connection");
+
     }
 
     /**
