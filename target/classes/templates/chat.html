@@ -36,7 +36,6 @@
                         <input class="mdui-textfield-input" id="msg"/>
                     </div>
                     <div class="mdui-container" style="padding:20px 35px">
-                        <!-- TODO: add a send button to send message -->
                         <button class="mdui-btn mdui-color-pink mdui-ripple"
                                 onclick="sendMsgToServer()">Send(Enter)
                         </button>
@@ -58,9 +57,8 @@
                     <span class="mdui-chip-icon mdui-color-blue">
                         <i class="mdui-icon material-icons">face</i></span>
                     <span class="mdui-chip-title">Online Users</span>
-                    <span class="mdui-chip-title" th:text="${onlineUsers}"></span>
+                    <span class="mdui-chip-title online-users"></span>
                 </div>
-                <!-- TODO: add a message container -->
                 <div class="message-container">
 
                 </div>
@@ -99,12 +97,23 @@
             //Receive Message from Server
             var message = JSON.parse(event.data) || {};
             var $messageContainer = $('.message-container');
-            if (message.type === 'SPEAK') {
-                $messageContainer.append(
-                    '<div class="mdui-card" style="margin: 10px 0;">' +
+            var modelSpeak = template('<div class="mdui-card" style="margin: 10px 0;">' +
                     '<div class="mdui-card-primary">' +
-                    '<div class="mdui-card-content message-content">' + message.username + "：" + message.msg + '</div>' +
+                    '<div class="mdui-card-content message-content">{username}: {msg}</div>' +
                     '</div></div>');
+             var modelGeneric = template( '<div class="mdui-card" style="margin: 10px 0;">' +
+                    '<div class="mdui-card-primary">' +
+                    '<div class="mdui-card-content message-content"><strong>{username}</strong> {msg}</div>' +
+                    '</div></div>');
+            if (message.type === 'SPEAK') {
+
+                $messageContainer.append(model(message));
+            } else if (message.type === 'ENTER') {
+                $messageContainer.append(modelGeneric(message));
+            } else if (message.type === 'LEAVE') {
+                $messageContainer.append(modelGeneric(message));
+            } else if (message.type === 'USERS') {
+                $('.online-users').text(message.msg);
             }
             $('.chat-num').text(message.onlineCount);
             var $cards = $messageContainer.children('.mdui-card:visible').toArray();
@@ -160,6 +169,16 @@
         e.keyCode === 13 && sendMsgToServer();
     };
 
+    /**
+    * Create a template and generate templated data
+    **/
+    function template(templateString) {
+        return function(data) {
+            return Object.keys(data).reduce(function(prev, next){
+                return prev.replace("{" + next + "}", data[next]);
+            }, templateString);
+        }
+    }
 </script>
 
 </body>

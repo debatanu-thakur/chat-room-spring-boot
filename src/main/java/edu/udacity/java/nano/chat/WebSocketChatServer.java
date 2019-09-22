@@ -44,6 +44,11 @@ public class WebSocketChatServer {
 
         WebSocketService.OnlineSessions.put(session.getId(), session);
         WebSocketService.OnlineUsers.put(username, session.getId());
+        Message msg = new Message(username, "entered chat", "ENTER");
+        sendMessageToAll(msg);
+        Message allUsers = new Message("", "", "USERS");
+        allUsers.msg =  Integer.toString(WebSocketService.OnlineSessions.size());
+        sendMessageToAll(allUsers);
     }
 
     /**
@@ -51,11 +56,8 @@ public class WebSocketChatServer {
      */
     @OnMessage
     public void onMessage(Session session, String jsonStr) {
-        //TODO: add send message.
-        JSONObject jObj = JSON.parseObject(jsonStr);
-        Message messg = new Message(jObj.getString("username"), jObj.getString("msg"));
+        Message messg = JSON.parseObject(jsonStr, Message.class);
         messg.type = "SPEAK";
-        WebSocketService.Conversations.add(messg);
         sendMessageToAll(messg);
     }
 
@@ -63,8 +65,14 @@ public class WebSocketChatServer {
      * Close connection, 1) remove session, 2) update user.
      */
     @OnClose
-    public void onClose(Session session) {
+    public void onClose(Session session, @PathParam("username") String username) {
         WebSocketService.OnlineSessions.remove(session.getId());
+        WebSocketService.OnlineUsers.put(username, "");
+        Message msg = new Message(username, "left chat", "LEAVE");
+        sendMessageToAll(msg);
+        Message allUsers = new Message("", "", "USERS");
+        allUsers.msg =  Integer.toString(WebSocketService.OnlineSessions.size());
+        sendMessageToAll(allUsers);
     }
 
     /**

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WebSocketService {
-    public static List<Message> Conversations = new ArrayList();
     public static Map<String, Session> OnlineSessions = new ConcurrentHashMap<>();
     public static Map<String, String> OnlineUsers = new ConcurrentHashMap<>();
 
