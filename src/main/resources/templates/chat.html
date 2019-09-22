@@ -106,8 +106,7 @@
                     '<div class="mdui-card-content message-content"><strong>{username}</strong> {msg}</div>' +
                     '</div></div>');
             if (message.type === 'SPEAK') {
-
-                $messageContainer.append(model(message));
+                $messageContainer.append(modelSpeak(message));
             } else if (message.type === 'ENTER') {
                 $messageContainer.append(modelGeneric(message));
             } else if (message.type === 'LEAVE') {

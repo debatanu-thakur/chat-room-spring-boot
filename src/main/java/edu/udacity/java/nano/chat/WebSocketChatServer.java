@@ -25,7 +25,7 @@ public class WebSocketChatServer {
      */
 
     private static void sendMessageToAll(Message msg) {
-        WebSocketService.OnlineSessions.forEach((id, session) -> {
+        WebSocketService.OnlineSessions.forEach((username, session) -> {
             synchronized (session) {
                 try {
                     session.getBasicRemote().sendText(JSON.toJSONString(msg));
@@ -42,8 +42,7 @@ public class WebSocketChatServer {
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username) {
 
-        WebSocketService.OnlineSessions.put(session.getId(), session);
-        WebSocketService.OnlineUsers.put(username, session.getId());
+        WebSocketService.OnlineSessions.put(username, session);
         Message msg = new Message(username, "entered chat", "ENTER");
         sendMessageToAll(msg);
         Message allUsers = new Message("", "", "USERS");
@@ -66,8 +65,7 @@ public class WebSocketChatServer {
      */
     @OnClose
     public void onClose(Session session, @PathParam("username") String username) {
-        WebSocketService.OnlineSessions.remove(session.getId());
-        WebSocketService.OnlineUsers.put(username, "");
+        WebSocketService.OnlineSessions.remove(username);
         Message msg = new Message(username, "left chat", "LEAVE");
         sendMessageToAll(msg);
         Message allUsers = new Message("", "", "USERS");
