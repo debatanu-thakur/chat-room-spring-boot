@@ -1,21 +1,25 @@
 # Chat Room
-Complete the chat room application implementation using WebSocket.
+The chat room application is completed using WebSockets and Java Spring Boot
 
 ## Background
-WebSocket is a communication protocol that makes it possible to establish a two-way communication channel between a
-server and a client.
+The features include
+1. Users are notified when a new user enters the chatroom
+2. Users are notified when an existing user leaves the chatroom
+3. Users can post chat to all of the users in the chatroom
 
-## Instruction
-### Implement the message model
-Message model is the message payload that will be exchanged between the client and the server. Implement the Message
-class in chat module. Make sure you cover all there basic actions.
-1. ENTER
-2. CHAT
-3. LEAVE
+## How To Run
+1. Have Java 1.8 installed
+2. Have maven package installed
+3. Clone the repository first
+    ```$cmd
+    git clone https://github.com/debatanu-thakur/chat-room-spring-boot.git
+    ```
+4. Make sure http://localhost:8080 is available
+5. Run using command
+    ```
+    mvn build; mvn spring-boot:run
+    ```
+### License
+MIT
 
-### Complete WebSocketChatServer
-Implement all TODOs inside WebSocketChatServer follow each method description.
-
-### Run the application with command
-mvn build; mvn spring-boot:run
 
