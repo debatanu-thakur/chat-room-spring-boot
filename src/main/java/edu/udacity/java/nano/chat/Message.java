@@ -6,16 +6,16 @@ package edu.udacity.java.nano.chat;
 public class Message {
     public String username;
     public String msg;
-    public String actions;
+    public String type;
 
     public Message(){
 
     }
 
-    public  Message(String username, String msg, String actions) {
+    public  Message(String username, String msg, String type) {
         this.username = username;
         this.msg = msg;
-        this.actions = actions;
+        this.type = type;
     }
 
     public Message(String username, String msg) {

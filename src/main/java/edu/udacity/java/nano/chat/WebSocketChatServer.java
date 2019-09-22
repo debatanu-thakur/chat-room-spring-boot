@@ -54,7 +54,7 @@ public class WebSocketChatServer {
         //TODO: add send message.
         JSONObject jObj = JSON.parseObject(jsonStr);
         Message messg = new Message(jObj.getString("username"), jObj.getString("msg"));
-        messg.actions = "CHAT";
+        messg.type = "SPEAK";
         WebSocketService.Conversations.add(messg);
         sendMessageToAll(messg);
     }
