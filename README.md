@@ -17,7 +17,7 @@ The features include
 4. Make sure http://localhost:8080 is available
 5. Run using command
     ```
-    mvn build; mvn spring-boot:run
+    mvn spring-boot:run
     ```
 ### License
 MIT
