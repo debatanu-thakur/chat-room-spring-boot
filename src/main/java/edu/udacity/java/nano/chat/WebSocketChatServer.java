@@ -1,13 +1,13 @@
 package edu.udacity.java.nano.chat;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.io.IOException;
 
 /**
  * WebSocket Server
@@ -17,16 +17,23 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 @Component
-@ServerEndpoint("/chat/{username}")
+@ServerEndpoint(value = "/chat/{username}")
 public class WebSocketChatServer {
 
     /**
      * All chat sessions.
      */
 
-    private static void sendMessageToAll(String msg) {
-        //TODO: add send message method.
-        System.out.println("send message connection " + msg);
+    private static void sendMessageToAll(Message msg) {
+        WebSocketService.OnlineSessions.forEach((id, session) -> {
+            synchronized (session) {
+                try {
+                    session.getBasicRemote().sendText(JSON.toJSONString(msg));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -34,12 +41,9 @@ public class WebSocketChatServer {
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("username") String username) {
-        //TODO: add on open connection.
-//        onlineSessions.put(username, session);
-//        users.put(session.getId(), username);
+
         WebSocketService.OnlineSessions.put(session.getId(), session);
         WebSocketService.OnlineUsers.put(username, session.getId());
-        System.out.println(username);
     }
 
     /**
@@ -48,8 +52,11 @@ public class WebSocketChatServer {
     @OnMessage
     public void onMessage(Session session, String jsonStr) {
         //TODO: add send message.
-        System.out.println("message connection " + jsonStr);
-
+        JSONObject jObj = JSON.parseObject(jsonStr);
+        Message messg = new Message(jObj.getString("username"), jObj.getString("msg"));
+        messg.actions = "CHAT";
+        WebSocketService.Conversations.add(messg);
+        sendMessageToAll(messg);
     }
 
     /**
@@ -57,8 +64,6 @@ public class WebSocketChatServer {
      */
     @OnClose
     public void onClose(Session session) {
-        //TODO: add close connection.
-        System.out.println("close connection");
         WebSocketService.OnlineSessions.remove(session.getId());
     }
 
