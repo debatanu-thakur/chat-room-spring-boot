@@ -38,7 +38,7 @@
                     <div class="mdui-container" style="padding:20px 35px">
                         <!-- TODO: add a send button to send message -->
                         <button class="mdui-btn mdui-color-pink mdui-ripple"
-                                onclick="sendMsgToServer()">Send
+                                onclick="sendMsgToServer()">Send(Enter)
                         </button>
                         <button class="mdui-btn mdui-color-theme mdui-ripple"
                                 onclick="clearMsg()">Clear
@@ -58,7 +58,7 @@
                     <span class="mdui-chip-icon mdui-color-blue">
                         <i class="mdui-icon material-icons">face</i></span>
                     <span class="mdui-chip-title">Online Users</span>
-                    <!-- TODO: check online number num -->
+                    <span th:text="${onlineUsers}"></span>
                 </div>
                 <!-- TODO: add a message container -->
             </div>
@@ -78,8 +78,9 @@
     function getWebSocket() {
         /**
          * WebSocket client PS：URL shows WebSocket protocal, port number, and then end point.
+         * [[${webSocketUrl}]]
          */
-        var webSocket = new WebSocket(/*[[${webSocketUrl}]]*/ 'ws://localhost:8080/chat');
+        var webSocket = new WebSocket('ws://localhost:8080/chat/' + [[${username}]]);
         /**
          * websocket open connection.
          */

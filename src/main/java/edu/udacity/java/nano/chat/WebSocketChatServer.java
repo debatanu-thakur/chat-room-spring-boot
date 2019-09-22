@@ -17,28 +17,29 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 @Component
-@ServerEndpoint("/chat")
+@ServerEndpoint("/chat/{username}")
 public class WebSocketChatServer {
 
     /**
      * All chat sessions.
      */
-    private static Map<String, Session> onlineSessions = new ConcurrentHashMap<>();
-    private static HashMap<String, String> users = new HashMap<>();
 
     private static void sendMessageToAll(String msg) {
         //TODO: add send message method.
+        System.out.println("send message connection " + msg);
     }
 
     /**
      * Open connection, 1) add session, 2) add user.
      */
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(Session session, @PathParam("username") String username) {
         //TODO: add on open connection.
 //        onlineSessions.put(username, session);
 //        users.put(session.getId(), username);
-        System.out.println("Open connection");
+        WebSocketService.OnlineSessions.put(session.getId(), session);
+        WebSocketService.OnlineUsers.put(username, session.getId());
+        System.out.println(username);
     }
 
     /**
@@ -47,6 +48,8 @@ public class WebSocketChatServer {
     @OnMessage
     public void onMessage(Session session, String jsonStr) {
         //TODO: add send message.
+        System.out.println("message connection " + jsonStr);
+
     }
 
     /**
@@ -56,7 +59,7 @@ public class WebSocketChatServer {
     public void onClose(Session session) {
         //TODO: add close connection.
         System.out.println("close connection");
-
+        WebSocketService.OnlineSessions.remove(session.getId());
     }
 
     /**

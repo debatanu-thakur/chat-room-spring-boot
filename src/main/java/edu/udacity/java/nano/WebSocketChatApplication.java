@@ -1,5 +1,6 @@
 package edu.udacity.java.nano;
 
+import edu.udacity.java.nano.chat.WebSocketService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class WebSocketChatApplication {
         //TODO: add code for login to chatroom.
         //add user
         request.setAttribute("username", username);
+        request.setAttribute("onlineUsers", WebSocketService.OnlineSessions.keySet().size() + 1);
         return new ModelAndView("/chat");
     }
 }
